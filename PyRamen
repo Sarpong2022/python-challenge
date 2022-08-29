@@ -1,1 +1,112 @@
+# -*- coding: UTF-8 -*-
+"""PyRamen Homework Starter."""
+
+# @TODO: Import libraries
+import csv
+from pathlib import Path
+
+# @TODO: Set file paths for menu_data.csv and sales_data.csv
+menu_filepath = Path('Resources/menu_data.csv')
+sales_filepath = Path('Resources/sales_data.csv')
+
+# @TODO: Initialize list objects to hold our menu and sales data
+menu = []
+sales = []
+
+# @TODO: Read in the menu data into the menu list
+with menu_filepath.open() as f: 
+    mf = csv.reader(f)
+    next(mf)
+    for row in mf:
+        menu.append(row)
+
+
+# @TODO: Read in the sales data into the sales list
+with sales_filepath.open() as f: 
+    sf = csv.reader(f)
+    next(sf)
+    for row in sf:
+        sales.append(row)
+
+
+# @TODO: Initialize dict object to hold our key-value pairs of items and metrics
+report = {}
+
+# Initialize a row counter variable
+row_count = 0
+
+# @TODO: Loop over every row in the sales list object
+for sale in sales:
+    # Line_Item_ID,Date,Credit_Card_Number,Quantity,Menu_Item
+    # @TODO: Initialize sales data variables
+    quantity = int(sale[3])
+    sales_item = sale[4]
+
+    # @TODO:
+    # If the item value not in the report, add it as a new entry with initialized metrics
+    # Naming convention allows the keys to be ordered in logical fashion, count, revenue, cost, profit
+    if sales_item not in report:
+        report[sales_item]={"01-count": 0, "02-revenue": 0, "03-cogs": 0, "04-profit": 0}
+
+
+    # @TODO: For every row in our sales data, loop over the menu records to determine a match
+    for menu_obj in menu:
+
+        # Item,Category,Description,Price,Cost
+        # @TODO: Initialize menu data variables
+        item=menu_obj[0]
+        price=float(menu_obj[3])
+        cost=float(menu_obj[4])
+
+        # @TODO: Calculate profit of each item in the menu data
+        profit = price * quantity - cost
+
+        # @TODO: If the item value in our sales data is equal to the any of the items in the menu, then begin tracking metrics for that item
+        if (sales_item == item):
+    
+            # @TODO: Print out matching menu data
+            print(menu_obj)
+
+
+            # @TODO: Cumulatively add up the metrics for each item key
+            report[sales_item]["01-count"] += quantity
+            report[sales_item]["02-revenue"] += price * quantity
+            report[sales_item]["03-cogs"] += cost * quantity
+            report[sales_item]["04-profit"] += profit * quantity
+
+        # @TODO: Else, the sales item does not equal any fo the item in the menu data, therefore no match
+        else:
+            print("%s does not equal %s! NO MATCH!"%(sales_item,item))
+
+
+    # @TODO: Increment the row counter by 1
+    row_count = row_count +1
+
+
+# @TODO: Print total number of records in sales data
+print(row_count)
+
+
+
+# @TODO: Write out report to a text file (won't appear on the command line output)
+with open("report.txt", 'w') as f: 
+    for key, value in report.items(): 
+        f.write('%s %s\n' % (key, value))
+        
+        
+        
+ # SALES DATA
+ 
+ spicy miso ramen {'01-count': 9238, '02-revenue': 110856.0, '03-cogs': 46190.0, '04-profit': 157018.0}
+tori paitan ramen {'01-count': 9156, '02-revenue': 119028.0, '03-cogs': 54936.0, '04-profit': 156756.0}
+truffle butter ramen {'01-count': 8982, '02-revenue': 125748.0, '03-cogs': 62874.0, '04-profit': 160146.0}
+tonkotsu ramen {'01-count': 9288, '02-revenue': 120744.0, '03-cogs': 55728.0, '04-profit': 166624.0}
+vegetarian spicy miso {'01-count': 9216, '02-revenue': 110592.0, '03-cogs': 46080.0, '04-profit': 155280.0}
+shio ramen {'01-count': 9180, '02-revenue': 100980.0, '03-cogs': 45900.0, '04-profit': 138944.0}
+miso crab ramen {'01-count': 8890, '02-revenue': 106680.0, '03-cogs': 53340.0, '04-profit': 141180.0}
+nagomi shoyu {'01-count': 9132, '02-revenue': 100452.0, '03-cogs': 45660.0, '04-profit': 141736.0}
+soft-shell miso crab ramen {'01-count': 9130, '02-revenue': 127820.0, '03-cogs': 63910.0, '04-profit': 168406.0}
+burnt garlic tonkotsu ramen {'01-count': 9070, '02-revenue': 126980.0, '03-cogs': 54420.0, '04-profit': 172800.0}
+vegetarian curry + king trumpet mushroom ramen {'01-count': 8824, '02-revenue': 114712.0, '03-cogs': 61768.0, '04-profit': 139316.0}       
+        
 
