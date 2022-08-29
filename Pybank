@@ -1,1 +1,104 @@
+#!/usr/bin/env python
+# coding: utf-8
 
+# ##### Import libraries
+
+# In[1]:
+
+
+import csv
+from pathlib import Path
+import statistics
+
+
+# ##### Read Data from CSV
+
+# In[2]:
+
+
+filepath = Path('Resources/budget_data.csv')
+
+
+# ##### Read in the budget data and calculate Total Months, Total and Changes
+
+# In[3]:
+
+
+with filepath.open() as f: 
+    bd = csv.reader(f)
+    next(bd)
+#     Define required variables
+    totalMonths = 0
+    total = 0
+    change = []
+    
+    for row in bd:
+#         increment total months count
+        totalMonths += 1
+#         increment total loss profit value
+        total += int(row[1])
+        change.append([row[0],int(row[1])])
+
+
+# ##### Calculate Average Change, Greatest Increase in Profits and Greatest Decrease in Profits
+
+# In[4]:
+
+
+greatestIncreaseInProfit = 0
+greatestIncreaseInProfitDate = ''
+greatestDecreaseInProfit = 0
+greatestDecreaseInProfitDate = ''
+monthToMonthChange = []
+for i in range(len(change)-1):
+    monthlyChange = (change[i+1][1] - change[i][1])
+    monthToMonthChange.append(monthlyChange)   
+    if monthlyChange > greatestIncreaseInProfit:
+        greatestIncreaseInProfitDate = (change[i+1][0])
+        greatestIncreaseInProfit = monthlyChange
+    elif monthlyChange < greatestDecreaseInProfit:
+        greatestDecreaseInProfitDate = (change[i+1][0])
+        greatestDecreaseInProfit = monthlyChange
+
+averageChange = round(statistics.mean(monthToMonthChange),2)
+
+
+# ##### print Financial Analysis
+
+# In[5]:
+
+
+print("Financial Analysis")
+print("----------------------------")
+
+print("Total Months: " + str(totalMonths))
+print("Total: $" + str(total))
+print("Average Change is: $" + str(round(averageChange, 2)))
+print("Greatest Increase in Profits: " + str(greatestIncreaseInProfitDate) + "  ($" + str(greatestIncreaseInProfit) + ")")
+print("Greatest Decrease in Profits: " + str(greatestDecreaseInProfitDate) + "  ($" + str(greatestDecreaseInProfit) + ")")
+
+
+# ##### write output into file
+
+# In[6]:
+
+
+f = open("financial_analysis_output.txt", "w")
+f.write("Financial Analysis\n")
+f.write("----------------------------\n")
+
+f.write("Total Months: " + str(totalMonths)+"\n")
+f.write("Total: $" + str(total)+"\n")
+f.write("Average Change is: $" + str(round(averageChange, 2))+"\n")
+f.write("Greatest Increase in Profits: " + str(greatestIncreaseInProfitDate) + "  ($" + str(greatestIncreaseInProfit) + ")"+"\n")
+f.write("Greatest Decrease in Profits: " + str(greatestDecreaseInProfitDate) + "  ($" + str(greatestDecreaseInProfit) + ")")
+f.close()
+
+
+Financial Analysis
+----------------------------
+Total Months: 86
+Total: $38382578
+Average Change is: $-2315.12
+Greatest Increase in Profits: Feb-2012  ($1926159)
+Greatest Decrease in Profits: Sep-2013  ($-2196167)
